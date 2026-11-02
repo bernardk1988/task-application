@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+    <div class="container shadow my-2">
+        <h3 class="text-uppercase"> {% if edit_todo %}Edit Task{% else %}Add Task{% endif %}</h3>
+        <form method="POST" action="{% if edit_todo %} {% url 'edit_todo' edit_todo.id %} {% else %} {% url 'add_todo_api' %} {% endif %}" class="border p-3 my-3 bg-light">
+            {% csrf_token %}
+                {% if edit_todo %}
+                    <input type="hidden" name="todo_id" value="{{ edit_todo.id }}">
+                {% endif %}
+                <div class="mb-3">
+                    <label class="form-label">Task</label>
+                    <input type="text" name="task" class="form-control" max-length="200" placeholder="Enter Task" 
+                     value="{{ edit_todo.task|default:'' }}" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">DateTime</label>
+                    <input type="datetime-local" id="datetime" name="datetime" class="form-control" 
+                    value="{% if edit_todo %}{{ edit_todo.datetime|date:'Y-m-d\\TH:i' }}{% endif %}" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                    <option value="Pending" {% if edit_todo.status == "Pending" %}selected{% endif %}>Pending</option>
+                    <option value="In Progress" {% if edit_todo.status == "In Progress" %}selected{% endif %}>In Progress</option>
+                    <option value="Completed" {% if edit_todo.status == "Completed" %}selected{% endif %}>Completed</option>
+                    </select>
+                </div>
+                 {% if edit_todo %}
+                    <button type="submit" class="btn btn-primary">
+                        Update
+                    </button>
+                    <a href="{% url 'todo_list' %}"
+                       class="btn btn-secondary">Cancel</a>
+                {% else %}
+                    <button type="submit" class="btn btn-success">
+                        Add Task
+                    </button>
+                {% endif %}
+        </form>
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+    {% endif %}
+        <h2>TODO LIST</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th>ID</th>
+                    <th>TASK</th>
+                    <th>DATE AND TIME</th>
+                    <th>STATUS</th>
+                    <th>ACTION</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for todo in todos%}
+                <tr>
+                    <td>{{todo.id}}</td>
+                    <td>{{todo.task}}</td>
+                    <td>{{ todo.datetime|date:"d-m-Y H:i" }}</td>
+                    <td>{% if todo.status == "Pending" %}<span class="badge bg-warning">{{todo.status}}</span>
+                    {% elif todo.status == "Completed" %}<span class="badge bg-success">{{todo.status}}</span>
+                    {% else %}<span class="badge bg-danger">{{todo.status}}</span> {% endif %}</td>
+                     <td class="d-flex justify-content-evenly">
+                        <a href="{% url 'edit_todo' todo.id %}" class="btn btn-secondary">Edit</a>
+                        <form method="POST" action="{% url 'delete_todo_api' todo.id %}">
+                            {%csrf_token%}
+                            <button type="submit" class="btn btn-secondary">DELETE</button>
+                        </form>
+                    </td> 
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center">No Tasks Available</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+           </table>
+        </div>
+    </div>
+{% endblock %}
+

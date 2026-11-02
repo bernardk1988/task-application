@@ -1,0 +1,38 @@
+
+
+
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css'%}?v=2">
+    <title>{% block title %}Todo List{% endblock %}</title>
+</head>
+<body>
+    <div class="container p-0 bg-white rounded-3 border my-5">
+
+        <!-- Header -->
+        <div class="col-12 bg-dark rounded-3 p-2 rounded-bottom-0">
+            <h2 class="text-center text-uppercase text-white">Todo List</h2>
+        </div>
+                {% block content %}
+                {% endblock %}
+        <!-- Footer -->
+        <div class="container bg-dark text-center text-white p-2 rounded-3 rounded-top-0">
+            <div class="row justify-content-evenly">
+                <div class="col-2">GET</div>
+                <div class="col-2">POST</div>
+                <div class="col-2">PUT</div>
+                <div class="col-2">PATCH</div>
+                <div class="col-2">DELETE</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>
