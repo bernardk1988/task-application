@@ -32,7 +32,7 @@ The Todo Management system is a Web Application Developed using Python, Django R
 
 - code editor: VS Code
 
-= browser: google chrome
+- browser: google chrome
 
 **Technologies Used**
 
