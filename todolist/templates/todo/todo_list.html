@@ -4,8 +4,10 @@
 
 
     <div class="container shadow my-2">
-        <h3 class="text-uppercase"> {% if edit_todo %}Edit Task{% else %}Add Task{% endif %}</h3>
-        <form method="POST" action="{% if edit_todo %} {% url 'edit_todo' edit_todo.id %} {% else %} {% url 'add_todo_api' %} {% endif %}" class="border p-3 my-3 bg-light">
+        <h3 class="text-uppercase edittodo"> {% if edit_todo %}Edit Task{% else %}<i class="bi bi-plus-circle"></i> Add Task{% endif %}</h3>
+        <form id="todoForm" method="POST" 
+        action="{% if edit_todo %}{% url 'update_todo_api' edit_todo.id %}{% else %} {% url 'add_todo_api' %}{% endif %}" 
+        class="border p-3 my-3 bg-light">
             {% csrf_token %}
                 {% if edit_todo %}
                     <input type="hidden" name="todo_id" value="{{ edit_todo.id }}">
@@ -36,7 +38,7 @@
                        class="btn btn-secondary">Cancel</a>
                 {% else %}
                     <button type="submit" class="btn btn-success">
-                        Add Task
+                        <i class="bi bi-plus"></i> Add Task
                     </button>
                 {% endif %}
         </form>
@@ -48,7 +50,7 @@
         </div>
     {% endfor %}
     {% endif %}
-        <h2>TODO LIST</h2>
+        <h2><i class="bi bi-card-image"></i> TODO LIST</h2>
         <div class="table-responsive">
             <table class="table table-bordered table-striped">
             <thead class="table-dark text-center">
@@ -70,10 +72,10 @@
                     {% elif todo.status == "Completed" %}<span class="badge bg-success">{{todo.status}}</span>
                     {% else %}<span class="badge bg-danger">{{todo.status}}</span> {% endif %}</td>
                      <td class="d-flex justify-content-evenly">
-                        <a href="{% url 'edit_todo' todo.id %}" class="btn btn-secondary">Edit</a>
-                        <form method="POST" action="{% url 'delete_todo_api' todo.id %}">
+                        <a href="{% url 'edit_todo' todo.id %}" class="btn btn-secondary"><i class="bi bi-pencil"></i>Edit</a>
+                        <form class="deleteForm" method="POST" action="{% url 'delete_todo_api' todo.id %}">
                             {%csrf_token%}
-                            <button type="submit" class="btn btn-secondary">DELETE</button>
+                            <button type="submit" class="btn btn-secondary"><i class="bi bi-archive"></i>DELETE</button>
                         </form>
                     </td> 
                 </tr>
@@ -86,5 +88,6 @@
            </table>
         </div>
     </div>
+
 {% endblock %}
 

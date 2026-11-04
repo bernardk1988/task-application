@@ -13,7 +13,7 @@ def todo_api(request):
     todos = Todo.objects.all().order_by("-id")
     serializer = TodoSerializer(todos,many=True)
     return Response({"success":True,
-                    ",message":"All todo data retrieved successfully",
+                    "message":"All todo data retrieved successfully",
                     "data":serializer.data},status=status.HTTP_200_OK)
 def todo_list(request):
     todos = Todo.objects.all().order_by('-id')
@@ -25,7 +25,7 @@ def add_todo_api(request):
          todo=serializer.save()
          return Response({
             "success":True,
-            "message": "Task added successfully!",
+            "message": "Response:Task added successfully!",
             "data":TodoSerializer(todo).data,
         }, status=status.HTTP_201_CREATED)
  
@@ -44,17 +44,15 @@ def add_todo(request):
             messages.error(request, str(serializer.errors))
     return redirect("todo_list")
 
-    # todos = Todo.objects.all().order_by('-id')
-    # return render(request,'todo/todo_list.html',{"todos":todos})
-@api_view(["PUT","PATCH"])
+@api_view(["POST","PUT","PATCH"])
 def update_todo_api(request,pk):
     todo = get_object_or_404(Todo,pk=pk)
-    serializer = TodoSerializer(todo,data=request.data,partial = (request.method == "PATCH"),)
+    serializer = TodoSerializer(todo,data=request.data,partial = (request.method in ["PATCH", "POST"]))
     if serializer.is_valid():
         serializer.save()
         return Response({
             "success":True,
-            "message":"Task updated successfully!",
+            "message":f"Response: Task {request.method} updated successfully!",
             "data": serializer.data,
         },status=status.HTTP_200_OK)
     return Response({
@@ -77,16 +75,15 @@ def edit_todo(request,pk):
         "todos": todos,
         "edit_todo": todo,
     })
+
 @api_view(["POST","DELETE"])
-def delete_todo_api(request,pk):
-    todo = get_object_or_404(Todo,pk=pk)
-    if request.method == "POST":
-        todo.delete()
-    #     return redirect('todo_list')
-    # todo.delete()
-    return Response(
-        {"message":"Task deleted successfully"},
-        status=status.HTTP_200_OK)
+def delete_todo_api(request, pk):
 
+    todo = get_object_or_404(Todo, pk=pk)
 
+    todo.delete()
 
+    return Response({
+        "success": True,
+        "message": "Response Message Task deleted successfully!"
+    }, status=status.HTTP_200_OK)
