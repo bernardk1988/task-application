@@ -1,4 +1,0 @@
-djangorestframework
-django-bootstrap5
-mysqlclient
-pillow
